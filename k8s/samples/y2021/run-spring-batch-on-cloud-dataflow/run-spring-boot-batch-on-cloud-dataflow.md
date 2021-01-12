@@ -92,8 +92,10 @@ applications -> Add application(s) -> Register one or more apps
 ```
 
 3. Have a plan to unify all #2 deployed application names and next section to-be-created task names, e.g.
-   - Application name will start with spring-batch-...
+   - Application name will start with batch-... 
    - Task name will start with task-...
+   
+   **NOTE:** Name must be as short as possible since it is part of pod container name later on which must be less than 63 characters in total
 
 ![Deployed Applications List](./images/after-spring-batch-apps-deployed.png)
 
@@ -129,4 +131,80 @@ Go to Tasks / Jobs -> Tasks list page
 ![run outbound event every 1 hour from 00:08](./images/schedule-outbound-events-run-every-hour-from-0008.png)
 
 
+
+# Scripts to register applications with app- prefix
+
+```shell
+curl 'http://127.0.0.1:8080/apps/task/app-requisition/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Frequisition-event-detector%3A0.0.1-SNAPSHOT'
+    
+curl 'http://127.0.0.1:8080/apps/task/app-candidate/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Fcandidate-event-detector%3A0.0.1-SNAPSHOT'
+    
+curl 'http://127.0.0.1:8080/apps/task/app-worker/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Fworker-event-detector%3A0.0.1-SNAPSHOT'
+
+curl 'http://127.0.0.1:8080/apps/task/app-worker-cancel/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Fworker-close-event-detector%3A0.0.1-SNAPSHOT'
+
+curl 'http://127.0.0.1:8080/apps/task/app-candidate-cancel/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Fcandidate-close-event-detector%3A0.0.1-SNAPSHOT'
+
+curl 'http://127.0.0.1:8080/apps/task/app-requisition-cancel/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Frequisition-close-event-detector%3A0.0.1-SNAPSHOT'
+
+curl 'http://127.0.0.1:8080/apps/task/app-outbound/0.0.1-SNAPSHOT' -i -X POST \
+    -d 'uri=docker%3Aspringcloudtask%2Fevent-transmitter%3A0.0.1-SNAPSHOT'
+```
+
+# Scripts to unregister the above applications
+
+```shell
+# un-register all apps
+# curl 'http://127.0.0.1:8080/apps' -i -X DELETE
+
+curl 'http://127.0.0.1:8080/apps/task/app-requisition/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-candidate/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-worker/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-worker-cancel/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-candidate-cancel/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-requisition-cancel/0.0.1-SNAPSHOT' -i -X DELETE
+curl 'http://127.0.0.1:8080/apps/task/app-outbound/0.0.1-SNAPSHOT' -i -X DELETE
+```
+
+# Scripts to Create Task Definitions
+
+```shell
+curl 'http://127.0.0.1:8080/tasks/definitions' -i -X POST \
+    -d 'name=task-inbound&definition=app-requisition%20%26%26%20app-candidate%20%26%26%20app-worker%20%26%26%20app-worker-cancel%20%26%26%20app-candidate-cancel%20%26%26%20app-requisition-cancel&description=Handle%20Inbound%20Events'
+    
+curl 'http://127.0.0.1:8080/tasks/definitions' -i -X POST \
+    -d 'name=task-outbound&definition=app-outbound&description=Handle%20Outbound%20Events'
+```
+
+# Scripts to Delete Task Definitions
+
+```shell
+curl 'http://127.0.0.1:8080/tasks/definitions/task-inbound?cleanup=true' -i -X DELETE
+curl 'http://127.0.0.1:8080/tasks/definitions/task-outbound?cleanup=true' -i -X DELETE
+```
+
+# Scripts to Create Task Schedules
+
+```shell
+# run every 6 hours at 01:00, 07:00, 13:00, 19:00
+curl 'http://127.0.0.1:8080/tasks/schedules' -i -X POST \
+    -d 'scheduleName=schedule-inbound&taskDefinitionName=task-inbound&properties=scheduler.cron.expression%3D0+1%2F6+*+*+*&arguments=--arg1%3Dxyz'
+
+# run every hour at 38 minutes
+curl 'http://127.0.0.1:8080/tasks/schedules' -i -X POST \
+    -d 'scheduleName=schedule-outbound&taskDefinitionName=task-outbound&properties=scheduler.cron.expression%3D38+*+*+*+*&arguments=--arg1%3Dxyz'
+```
+
+# Scripts to Delete Task Schedules
+
+```shell
+curl 'http://127.0.0.1:8080/tasks/schedules/schedule-inbound' -i -X DELETE
+curl 'http://127.0.0.1:8080/tasks/schedules/schedule-outbound' -i -X DELETE
+```
 
