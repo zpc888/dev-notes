@@ -1,0 +1,8 @@
+dataflow config server http://localhost:8080
+task execution cleanup --id 106
+task execution cleanup --id 105
+task execution cleanup --id 104
+task execution cleanup --id 103
+task execution cleanup --id 102
+task execution cleanup --id 108
+exit

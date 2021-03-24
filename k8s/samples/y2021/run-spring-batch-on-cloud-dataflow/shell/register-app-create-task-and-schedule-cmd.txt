@@ -1,0 +1,26 @@
+dataflow config server http://localhost:8080
+
+app register --name app-requisition --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/requisition-event-detector:0.0.1-UAT
+app register --name app-candidate --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/candidate-event-detector:0.0.1-UAT
+app register --name app-worker --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/worker-event-detector:0.0.1-UAT
+app register --name app-worker-cancel --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/worker-close-event-detector:0.0.1-UAT
+app register --name app-candidate-cancel --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/candidate-close-event-detector:0.0.1-UAT
+app register --name app-requisition-close --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/requisition-close-event-detector:0.0.1-UAT
+app register --name app-requisition-cancel --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/requisition-cancel-event-detector:0.0.1-UAT
+app register --name app-outbound --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/event-transmitter:0.0.1-UAT
+app register --name app-tcc-lock --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/tcc-obtain-lock:0.0.1-UAT
+app register --name app-tcc-unlock --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/tcc-release-lock:0.0.1-UAT
+app register --name app-tcc-reset --type task --uri docker:mysupport-docker-release.docker.fis.dev/springcloudtask/tcc-reset-lock:0.0.1-UAT
+
+task create task-inbound --definition "app-tcc-lock && app-requisition 'FAILED'->e1: app-tcc-unlock && app-candidate 'FAILED'->e2: app-tcc-unlock && app-worker 'FAILED'->e3: app-tcc-unlock && app-worker-cancel 'FAILED'->e4: app-tcc-unlock && app-candidate-cancel 'FAILED'->e5: app-tcc-unlock && app-requisition-close 'FAILED'->e6: app-tcc-unlock && app-requisition-cancel 'FAILED'->e7: app-tcc-unlock && app-tcc-unlock" --description "Handle Inbound Events"
+task create task-outbound --definition "app-tcc-lock && app-outbound 'FAILED'->e8: app-tcc-unlock && app-tcc-unlock" --description "Handle Outbound Events"
+task create reset-tcc-inbound-event --definition "app-tcc-reset" --description "Reset inbound lock"
+task create reset-tcc-outbound-event --definition "app-tcc-reset" --description "Reset outbound lock"
+
+task schedule create --name schedule-inbound --definitionName "task-inbound" --expression "0 1/6 * * *" --properties "app.task-inbound.app-tcc-lock.tcc.task.name=inbound-event, app.task-inbound.app-tcc-unlock.tcc.task.name=inbound-event"
+task schedule create --name schedule-outbound --definitionName "task-outbound" --expression "38 * * * *" --properties "app.task-outbound.app-tcc-lock.tcc.task.name=outbound-event, app.task-outbound.app-tcc-unlock.tcc.task.name=outbound-event"
+
+
+
+
+exit
