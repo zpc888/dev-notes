@@ -15,8 +15,8 @@
 ## Detail example focus on SEQ and ACK
 ### Why 3-way for handshaking, but 4-way for termination?
 It will be nice if SYN (client -> server), ACK (client <- server), SYN (client <- server), ACK (client -> server) 
-for handshaking, or FIN (client <- server), ACK (client -> server), FIN (client -> server), ACK (client <- server) 
-for termination. In that case open and close session are symmetric matched step-wise. 
+for handshaking, or FIN (client <- server), ACK/FIN (client -> server), ACK (client <- server) 
+for termination. In that case open and close session are symmetrically matched step-wise. 
 
 The reason for this is that network will try as fast as possible, for handshkaing, it combines ACK and SYN together to 
 save one trip. But at closing phase, it cannot combine ACK and FIN (step 2 and 3) together because Client may not finish
