@@ -81,6 +81,11 @@ after n-times package transmission time.
 
 The reason for this is that if Client doesn't receives Server's ACK, it may resend
 FIN/ACK (seq=377 ack=572 data=1 phantom byte), so server can reply ACK again
+
+Vice versa if Client first sends FIN/ACK, Server ack. After server finishes works,
+it sends FIN/ACK, Client sends ACK, once server receives this ACK, its status can
+go to CLOSED, but Client's status should be TIME_WAIT after sending ACK in case
+Server doesn't receive its ACK.
 end note
 
 end

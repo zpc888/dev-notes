@@ -1,9 +1,30 @@
 # TCP Connection 
-## Open Session (3-way handshakes)
-## Data Transmission
-## Close Session (4-way termination)
+## Overview
+### Open Session (3-way handshakes)
+1. Client --> SYN --> Server
+2. Client <-- SYN/ACK <-- Server
+3. Client --> ACK --> Server
+### Data Transmission
+- Http or FTP to bi-directionally transfer data
+### Close Session (4-way termination)
+1. Client <-- FIN/ACK <-- Server
+2. Client --> ACK --> Server
+3. Client --> FIN/ACK --> Server
+4. Client <-- ACK <-- Server
 
-## TCP Sequence number and ack 
+## Detail example focus on SEQ and ACK
+### Why 3-way for handshaking, but 4-way for termination?
+It will be nice if SYN (client -> server), ACK (client <- server), SYN (client <- server), ACK (client -> server) 
+for handshaking, or FIN (client <- server), ACK (client -> server), FIN (client -> server), ACK (client <- server) 
+for termination. In that case open and close session are symmetric matched step-wise. 
+
+The reason for this is that network will try as fast as possible, for handshkaing, it combines ACK and SYN together to 
+save one trip. But at closing phase, it cannot combine ACK and FIN (step 2 and 3) together because Client may not finish
+processing all received network packets yet. That is why it sends ACK right away, it may send FIN a while later after 
+all received packets are processed. For establishing connection, there are no received packets which might pends for 
+process since it is brand-new.
+
+### TCP Sequence number and ack relationship
 When sending out ack message, its `ack number` = `incoming sequence number` + `number of data bytes`
 Basically this number tells the receiver to send from this position for next conversation. 
 
