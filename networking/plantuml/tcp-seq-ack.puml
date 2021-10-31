@@ -1,0 +1,88 @@
+@startuml
+
+group handshake
+Client -> Server: SYN (seq=0 ack=0 data=1 phantom byte)
+Client <- Server: SYN/ACK (seq=0, ack=1, data=1 pnantom byte)
+Client -> Server: ACK (seq=1 ack=1 data=no byte)
+end
+note right
+after 3-way handshake
+netstat -natp command
+will show ESTABLISHED status
+end note
+
+group http GET
+Client -> Server: seq=1 ack=1 data=376 bytes (see note)
+note right #aqua
+GET / HTTP/1.1
+HOST: 127.0.0.1
+Connection: keep-alive
+Accept: text/html,application/json
+Upgrade-Insecure-Request: yes
+User-Agent: Mozilla/5.0...
+Accept-Encoding: gzip, ...
+Accept-Language: en-US, ..
+end note
+
+Client <- Server: seq=1 ack=377 data=270 bytes (see note)
+note right #FFAAAA
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+ETag: "186-123638..."
+Date: Tue, 31 Oct 2021
+Cache-Control: public...
+Last-Modified: Tue, ...
+Content-Type: text/html
+Content-Length: 164
+Connection: keep-alive
+end note
+
+Client -> Server: ACK (seq=377 ack=271)
+
+Client <- Server: seq=271 ack=377 data=300 bytes (see note)
+note right #FFAAAA
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      ...
+  </head>
+  <body>
+      ...
+  </body>
+</html>
+end note
+
+Client -> Server: seq=377 ack=571 data=0 byte
+note right: ack 571 = 271 + 300
+end
+
+group Server ends TCP session (4-way termination)
+Client <- Server: FIN/ACK (seq=571 ack=377 data=1 phantom byte)
+Client -> Server: ACK (seq=377 ack=572 data=0 byte)
+note right #aqua
+Server ends TCP session
+
+netstat -natp
+will show Server status = FIN_WAIT2 and Client = close_wait
+Client must call close() method to indicate it wants to finish the converstation too
+Without calling close() method, the resource (socket, memory) is leaking out
+end note
+
+Client -> Server: FIN/ACK (seq=377 ack=572 data=1 phantom byte)
+Client <- Server: ACK (seq=572 ack=378 data=0 byte)
+note right #FFAAAA
+Client ends TCP session
+
+netstat -natp
+After Client receives Server's ACK, Client app network status
+will be in CLOSED, invisible to netstat -natp.
+But Server status shows TIME_WAIT, it eventually will become CLOSED
+after n-times package transmission time.
+
+The reason for this is that if Client doesn't receives Server's ACK, it may resend
+FIN/ACK (seq=377 ack=572 data=1 phantom byte), so server can reply ACK again
+end note
+
+end
+
+@enduml
