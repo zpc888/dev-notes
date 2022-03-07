@@ -1,0 +1,37 @@
+@startmindmap
+'https://plantuml.com/mindmap-diagram
+
+caption figure 1
+title Flow Builder
+
+* Toolbox
+
+** Elements
+*** Interactions
+****_ Screeen
+****_ Action
+****_ Subflow
+
+*** Logic
+****_ Assignment
+****_ Decision
+****_ Loop
+****_ Collection Sort
+
+*** Data
+****_ Create Records
+****_ Update Records
+****_ Get Records
+****_ Delete Records
+****_ Roll Back Records
+
+** Manager
+
+
+* New ResourceAccessException
+** Global constants
+** Screen Components
+** Global Variable
+
+
+@endmindmap
