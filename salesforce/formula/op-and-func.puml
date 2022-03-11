@@ -1,0 +1,120 @@
+@startmindmap
+* Formula
+--[#FFBBCC] Math Ops
+---_ = +(Add)
+---_ -(Substract)
+---_ *(Multiply)
+---_ /(Divide)
+---_ ^(Exponentiation)
+---_ ()(Open and Close Parenthesis)
+
+--[#FFBBCC] Logical Ops
+---_ = = and == (Equal)
+---_ <> and != (Not Equal)
+---_ < (Less Than)
+---_ > (Greater Than)
+---_ <= (Less Than or Equal)
+---_ >= (Greater Than or Equal)
+---_ && (AND)
+---_ || (OR)
+
+--[#FFBBCC] Text Ops
+---_ = & and + (Concatenate)
+
+**[#lightblue] Date and Time Funcs
+***_ = ADDMONTHS
+***_ DATE
+***_ DATEVALUE
+***_ DATETIMEVALUE
+***_ TIMEVALUE: not in flow
+***_ TIMENOW: not in flow
+***_ TODAY
+***_ NOW
+***_ YEAR
+***_ MONTH
+***_ WEEKDAY
+***_ DAY
+***_ HOUR
+***_ MINUTE
+***_ SECOND
+***_ MILLISECOND
+
+**[#lightblue] Logical Funcs
+***_ = AND
+***_ BLANKVALUE
+***_ CASE
+***_ IF
+***_ ISBLANK
+***_ ISCLONE
+***_ ISNEW: not in flow
+***_ ISNULL
+***_ ISNUMBER
+***_ NOT
+***_ NULLVALUE
+***_ OR
+***_ PRIORVALUE: not in flow
+
+**[#lightblue] Math Funcs
+***_ = ABS
+***_ CEILING
+***_ DISTANCE
+***_ EXP
+***_ FLOOR
+***_ GEOLOCATION
+***_ LN
+***_ LOG
+***_ MAX
+***_ MCEILING
+***_ MFLOOR
+***_ MIN
+***_ MOD
+***_ ROUND
+***_ SQRT
+
+**[#lightblue] Text Funcs
+***_ = BEGINS
+***_ BR
+***_ CASESAFEID
+***_ CONTAINS
+***_ FIND
+***_ GETSESSIONID
+***_ HTMLENCODE
+***_ HYPERLINK
+***_ IMAGE: not in flow
+***_ INCLUDES
+***_ ISPICKVAL
+***_ JSENCODE
+***_ JSINHTMLENCODE
+***_ LEFT
+***_ LEN
+***_ LOWER
+***_ LPAD
+***_ MID
+***_ RIGHT
+***_ RPAD
+***_ SUBSTITUE
+***_ TEXT
+***_ TRIM
+***_ UPPER
+***_ URLENCODE
+***_ VALUE
+
+**[#lightblue] Summary Funcs
+***_ = PARENTGROUPVAL: not in flow
+***_ PREVGROUPVAL: not in flow
+
+**[#lightblue] Advanced Funcs
+***_ = CURRENCYRATE
+***_ GETRECORDIDS: not in flow
+***_ IMAGEPROXYURL
+***_ INCLUDE: not in flow
+***_ ISCHANGED: not in flow
+***_ JUNCTIONIDLIST
+***_ LINKTO
+***_ PREDICT
+***_ REGEX
+***_ REQUIRESCRIPT: not in flow
+***_ URLFOR
+***_ VLOOKUP: not in flow
+
+@endmindmap
