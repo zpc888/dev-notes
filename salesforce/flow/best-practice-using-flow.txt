@@ -1,0 +1,10 @@
+1. plan first before developing a flow
+2. don't use flow to build everything 
+3. build in a test/sandbox environment
+4. The "One Record-triggered Flow" Per Object - Per Type
+5. Use the Advanced Technique to Merge Decision Node
+6. Build Reusable Flow(s) - Subflow(s)
+7. Supercharge flow with Invocable Apex
+8. Don't hardcode IDs, Query for them
+9. Handle Errors with Fault Paths
+10. Use Debug Log to check why a Flow Fails at runtime
